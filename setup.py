@@ -4,7 +4,7 @@ import os
 
 #declaring variables
 PROJECT_NAME = 'backorder_prediction'
-VERSION = '0.0.2'
+VERSION = '0.0.3'
 AUTHOR = 'n00b'
 DESCRIPTION = ''
 PACKAGES = find_packages()
