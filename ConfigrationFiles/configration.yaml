@@ -1,0 +1,14 @@
+training_pipeline_config:
+  pipeline_name: application
+  artifact_dir: storage
+
+
+data_ingestion_config:
+  dataset_download_url:
+  raw_data_dir: raw_data
+  tgz_download_dir: tgx_data
+  ingested_dir: ingested_dir
+  ingested_train_dir: train
+  ingested_test_dir: test
+
+  
