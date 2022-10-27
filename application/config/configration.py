@@ -1,5 +1,5 @@
 from application.constant import *
-from application.logging import logging
+from application.logger import logging
 from application.exception import BackorderException
 from application.entity.config_entity import DataIngestionConfig, TrainingPipelineCongif
 from application.entity.artifact_entity import DataIngestionArtifact
