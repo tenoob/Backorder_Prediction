@@ -58,13 +58,18 @@ class Configration:
             ingested_test_dir = os.path.join(ingested_data_dir,
                                         data_ingestion_info[DATA_INGESTION_INGESTED_TEST_DIR_KEY])
 
+            train_file_name = data_ingestion_info[DATA_INGESTION_TRAIN_FILE_NAME_KEY]
+
+            test_file_name = data_ingestion_info[DATA_INGESTION_TEST_FILE_NAME_KEY]
 
             data_ingestion_config = DataIngestionConfig(
                 dataset_download_url=dataset_download_url,
                 tgz_download_dir=tgz_download_url,
                 raw_data_dir=raw_data_dir,
                 ingested_train_dir=ingested_train_dir,
-                ingested_test_dir=ingested_test_dir
+                ingested_test_dir=ingested_test_dir,
+                train_file_name=train_file_name,
+                test_file_name=test_file_name
             )
 
             logging.info(f"Data Ingestion Config: {data_ingestion_config}")
