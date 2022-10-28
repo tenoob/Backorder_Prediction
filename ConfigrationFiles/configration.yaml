@@ -10,5 +10,7 @@ data_ingestion_config:
   ingested_dir: ingested_dir
   ingested_train_dir: train
   ingested_test_dir: test
+  train_file_name: Kaggle_Training_Dataset_v2.csv
+  test_file_name: Kaggle_Test_Dataset_v2.csv
 
   
