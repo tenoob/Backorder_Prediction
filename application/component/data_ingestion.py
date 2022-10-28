@@ -5,6 +5,7 @@ from application.entity.config_entity import DataIngestionConfig
 import os,sys
 from six.moves import urllib
 #import urllib.request
+from shutil import copy
 import patoolib
 
 
@@ -13,7 +14,7 @@ import patoolib
 class DataIngestion:
     def __init__(self,data_ingestion_config: DataIngestionConfig) -> None:
         try:
-            logging.info(f"{'>'*20} Data Ingestion Log Started. {'<'*20}")
+            logging.info(f"\n{'>'*20} Data Ingestion Log Started. {'<'*20}")
             self.data_ingestion_config = data_ingestion_config
         except Exception as e:
             raise BackorderException(e,sys) from e
@@ -60,11 +61,55 @@ class DataIngestion:
         except Exception as e:
             raise BackorderException(e,sys) from e
 
+    def saving_data_into_ingested(self):
+            raw_data_dir = self.data_ingestion_config.raw_data_dir
+
+            train_file_path = None
+            test_file_path = None
+
+            for filename in os.listdir(raw_data_dir):
+
+                src_file = os.path.join(raw_data_dir,filename)
+
+                if filename == self.data_ingestion_config.train_file_name:
+
+                    dest_file = os.path.join(self.data_ingestion_config.ingested_train_dir,filename)
+                    os.makedirs(dest_file,exist_ok=True)
+                    copy(src_file,dest_file)
+                    train_file_path = dest_file
+                    logging.info(f"Exported Training file into file: [ {dest_file} ]")
+
+                elif filename == self.data_ingestion_config.test_file_name:
+                    dest_file = os.path.join(self.data_ingestion_config.ingested_test_dir,filename)
+                    os.makedirs(dest_file,exist_ok=True)
+                    copy(src_file,dest_file)
+                    test_file_path = dest_file
+                    logging.info(f"Exported Testing file into file: [ {dest_file} ]")
+
+                else:
+                    logging.info(f" [ {filename} is Not Utilized")
+
+            data_ingestion_artifact = DataIngestionArtifact(
+                train_file_path=train_file_path,
+                test_file_path=test_file_path,
+                is_ingested=True,
+                message="Data Ingestion Artifact has been created with 2 sepate files for train and test")
+
+            logging.info(f"Data Ingestion Artifact: [ {data_ingestion_artifact} ]")
+            return data_ingestion_artifact
 
     def initiate_data_ingestion(self) -> DataIngestionArtifact:
         try:
             tgz_file_path = self.download_data()
             self.extract_tgz_file(tgz_file_path=tgz_file_path)
-            print(tgz_file_path)
+            #print(tgz_file_path)
+
+            return self.saving_data_into_ingested()
+
         except Exception as e:
             raise BackorderException(e,sys) from e
+            
+
+    def __del__(self):
+        logging.info(f"\n{'>'*20} Data Ingestion Log Completed. {'<'*20}\n")
+
