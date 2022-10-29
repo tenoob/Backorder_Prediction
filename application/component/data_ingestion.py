@@ -6,6 +6,7 @@ import os,sys
 from six.moves import urllib
 #import urllib.request
 from shutil import copy
+import pandas as pd
 import patoolib
 
 
@@ -73,17 +74,20 @@ class DataIngestion:
 
                 if filename == self.data_ingestion_config.train_file_name:
 
-                    dest_file = os.path.join(self.data_ingestion_config.ingested_train_dir,filename)
+                    dest_file = self.data_ingestion_config.ingested_train_dir
                     os.makedirs(dest_file,exist_ok=True)
+                    
                     copy(src_file,dest_file)
-                    train_file_path = dest_file
+
+                    train_file_path = os.path.join(dest_file,filename)
                     logging.info(f"Exported Training file into file: [ {dest_file} ]")
 
                 elif filename == self.data_ingestion_config.test_file_name:
-                    dest_file = os.path.join(self.data_ingestion_config.ingested_test_dir,filename)
+                    dest_file = self.data_ingestion_config.ingested_test_dir
                     os.makedirs(dest_file,exist_ok=True)
+                    
                     copy(src_file,dest_file)
-                    test_file_path = dest_file
+                    test_file_path = os.path.join(dest_file,filename)
                     logging.info(f"Exported Testing file into file: [ {dest_file} ]")
 
                 else:
