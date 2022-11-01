@@ -26,5 +26,5 @@ data_transformation_config:
   transformed_test_dir: test
   preprocessed_dir: preprocessed
   preprocessed_object_file_name: preprocessed.pkl
+  accepted_vairence: 0.90
 
-  
