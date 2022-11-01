@@ -1,4 +1,4 @@
-from tkinter import E
+from application.constant import COLUMNS_TO_USE_KEY, SCHEMA_FILE_PATH
 from application.entity.artifact_entity import DataIngestionArtifact, DataValidationArtifact
 from application.entity.config_entity import DataValidationConfig
 from application.logger import logging
@@ -10,6 +10,8 @@ from evidently.dashboard import Dashboard
 from evidently.dashboard.tabs import DataDriftTab
 import json
 import pandas as pd
+
+from application.util.utililty import read_yaml_file
 
 class DataValidation:
 
@@ -64,8 +66,10 @@ class DataValidation:
 
     def get_train_and_test_df(self):
         try:
-            train_df = pd.read_csv(self.data_ingestion_artifact.train_file_path,low_memory=False)
-            test_df = pd.read_csv(self.data_ingestion_artifact.test_file_path,low_memory=False)
+            schema_file = read_yaml_file(file_path=SCHEMA_FILE_PATH)
+
+            train_df = pd.read_csv(self.data_ingestion_artifact.train_file_path,usecols=schema_file[COLUMNS_TO_USE_KEY])
+            test_df = pd.read_csv(self.data_ingestion_artifact.test_file_path,usecols=schema_file[COLUMNS_TO_USE_KEY])
 
             return train_df,test_df
         except Exception as e:
@@ -97,6 +101,7 @@ class DataValidation:
             with open(report_file_path,"w") as report_file:
                 json.dump(report,report_file,indent=6)
 
+            logging.info(f"Report saved as Json at: [ {report_file_path} ]")
             return report
         except Exception as e:
             raise BackorderException(e,sys) from e
@@ -121,6 +126,7 @@ class DataValidation:
             os.makedirs(report_page_dir,exist_ok=True)
 
             dashboard.save(report_page_file_path)
+            logging.info(f"Report page saved at: [ {report_page_file_path} ]")
         except Exception as e:
             raise BackorderException(e,sys) from e
 
