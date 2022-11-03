@@ -2,7 +2,7 @@
 from application.constant import *
 from application.logger import logging
 from application.exception import BackorderException
-from application.entity.config_entity import DataIngestionConfig, DataValidationConfig, TrainingPipelineCongif
+from application.entity.config_entity import DataIngestionConfig, DataValidationConfig, TrainingPipelineCongif , DataTransformationConfig
 from application.entity.artifact_entity import DataIngestionArtifact
 from application.util.utililty import read_yaml_file
 from urllib import response
@@ -111,6 +111,46 @@ class Configration:
 
             logging.info(f"Data Validation Config: {data_validation_config}")
             return data_validation_config
+        except Exception as e:
+            raise BackorderException(e,sys) from e
+
+
+    def get_data_transfomation_config(self) -> DataTransformationConfig:
+        try:
+            artifact_dir = self.training_pipeline_config.artifact_dir
+
+            data_transformation_artifact_dir = os.path.join(
+                artifact_dir,
+                DATA_TRANSFORMATION_ARTIFACT_DIR,
+                self.current_time_stamp)
+
+            data_transformation_config_info = self.config_info[DATA_TRANSFORMATION_CONFIG_KEY]
+
+            preprocesses_object_file_path = os.path.join(
+                data_transformation_artifact_dir,
+                data_transformation_config_info[DATA_TRANSFORMATION_PREPROCESSING_DIR_KEY],
+                data_transformation_config_info[DATA_TRANSFORMATION_PREPROCESSING_OBJECT_FILE_NAME])
+
+            transformed_train_dir = os.path.join(
+                data_transformation_artifact_dir,
+                data_transformation_config_info[DATA_TRANSFORMATION_DIR_NAME_KEY],
+                data_transformation_config_info[DATA_TRANSFORMATION_TRAIN_DIR_NAME_KEY])
+
+            transformed_test_dir = os.path.join(
+                data_transformation_artifact_dir,
+                data_transformation_config_info[DATA_TRANSFORMATION_DIR_NAME_KEY],
+                data_transformation_config_info[DATA_TRANSFORMATION_TEST_DIR_NAME_KEY]
+            )
+
+            data_transformation_config = DataTransformationConfig(
+                preprocessed_object_file_path=preprocesses_object_file_path,
+                transformed_test_dir=transformed_test_dir,
+                transformed_train_dir=transformed_train_dir
+            )
+
+            logging.info(f"Data Transformation Config: {data_transformation_config}")
+
+            return data_transformation_config
         except Exception as e:
             raise BackorderException(e,sys) from e
     
