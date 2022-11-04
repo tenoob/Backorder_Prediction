@@ -1,12 +1,13 @@
 from sklearn.compose import ColumnTransformer
-from sklearn.decomposition import PCA
+from sklearn.decomposition import PCA,TruncatedSVD
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
-from application.constant import CATEGORICAL_COLUMN_KEY, DATA_TRANSFORMATION_ACCEPTED_VAIRENCE_KEY, NUMERICAL_COLUMN_KEY
+from application.constant import CATEGORICAL_COLUMN_KEY, NUMERICAL_COLUMN_KEY , ACCEPTED_VAIRENCE_KEY
 from application.entity.artifact_entity import DataIngestionArtifact, DataTransformationArtifact, DataValidationArtifact 
 from application.entity.config_entity import DataTransformationConfig
 from application.util.utililty import *
+from application.util.col_dim_reduction import CustomTransformer
 from application.logger import logging
 from application.exception import BackorderException
 import os,sys
@@ -26,6 +27,8 @@ class DataTransformation:
         except Exception as e:
             raise BackorderException(e,sys) from e
 
+ 
+
     def get_data_transformer_object(self) -> ColumnTransformer:
         try:
             schema_file_path = self.data_validation_artifact.schema_file_path
@@ -34,28 +37,38 @@ class DataTransformation:
             numerical_columns = dataset_schema[NUMERICAL_COLUMN_KEY]
             categorical_columns = dataset_schema[CATEGORICAL_COLUMN_KEY]
 
-            accepted_componets = self.data_transformation_config[DATA_TRANSFORMATION_ACCEPTED_VAIRENCE_KEY]
+            accepted_componets = dataset_schema[ACCEPTED_VAIRENCE_KEY]
+            logging.info(f"Accepted Varience: {accepted_componets}")
             
             numerical_pipeline = Pipeline(steps=[
                 ("imputer",SimpleImputer(strategy='median')),
                 ('scaler',StandardScaler()),
-                ('pca',PCA(n_components=accepted_componets))
-            ])
+                ])
+
+            #accepted_componets=accepted_componets*100
 
             categorical_pipeline = Pipeline(steps=[
                 ('imputer',SimpleImputer(strategy='most_frequent')),
                 ('one_hot_encoder',OneHotEncoder()),
                 ('scaler',StandardScaler(with_mean=False)),
-                ('pca',PCA(n_components=accepted_componets))
+                
             ])
 
             logging.info(f"Categorical columns: {categorical_columns}")
             logging.info(f"Numerical columns: {numerical_columns}")
 
-            preprocess = ColumnTransformer([
+            separete_preprocess = ColumnTransformer(
+                transformers=[
                 ('numerical_pipeline',numerical_pipeline,numerical_columns),
                 ('categorical_pipeline',categorical_pipeline,categorical_columns)
             ])
+
+            preprocess = Pipeline([
+                ("part1",separete_preprocess),
+                ('pca',PCA(n_components=accepted_componets))
+            ])
+
+
 
             return preprocess
         except Exception as e:
@@ -88,9 +101,13 @@ class DataTransformation:
             logging.info(f"Splitting Data into Input and Target feature for Trainng and Testing Dataframes.")
             input_feature_train_df = train_df.drop(columns=[target_column_name],axis=1)
             target_feature_train_df = train_df[[target_column_name]]
-
+            
             input_feature_test_df = test_df.drop(columns=[target_column_name],axis=1)
             target_feature_test_df = test_df[[target_column_name]]
+
+            logging.info(f"Training Dataframe Columns: {input_feature_train_df.columns}")
+            logging.info(f"Testing Dataframe Columns: {input_feature_test_df.columns}")
+
 
             logging.info(f"Applying Pre-Processing object on Training Dataframes.")
             input_feature_train_arr = preprocessing_obj.fit_transform(input_feature_train_df)
@@ -134,3 +151,7 @@ class DataTransformation:
             return data_transformation_artifact    
         except Exception as e:
             raise BackorderException(e,sys) from e
+
+
+    def __del__(self):
+        logging.info(f"\n{'>'*20} Data Transformation Log Completed. {'<'*20}\n")

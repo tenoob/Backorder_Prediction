@@ -2,7 +2,8 @@ from tempfile import TemporaryFile
 from tkinter import E
 from application.component.data_ingestion import DataIngestion
 from application.component.data_validation import DataValidation
-from application.entity.artifact_entity import DataIngestionArtifact, DataValidationArtifact
+from application.component.data_transformation import DataTransformation
+from application.entity.artifact_entity import DataIngestionArtifact, DataValidationArtifact , DataTransformationArtifact
 from application.logger import logging
 from application.exception import BackorderException
 from application.config.configration import Configration
@@ -36,6 +37,19 @@ class Pipeline():
         except Exception as e:
             raise BackorderException(e,sys) from e
 
+    def start_data_transformation(self,
+                                data_ingestion_artifact:DataIngestionArtifact,     
+                                    data_validation_artifact: DataValidationArtifact) -> DataTransformationArtifact:
+        try:
+            data_transformation_artifact = DataTransformation(
+                data_ingestion_artifact=data_ingestion_artifact,
+                data_validation_artifact=data_validation_artifact,
+                data_transformation_config=self.config.get_data_transfomation_config())
+
+            return data_transformation_artifact.initate_data_transformation()
+        except Exception as e:
+            raise BackorderException(e,sys) from e
+    
     def run_pipeline(self):
         try:
             #data ingestion 
@@ -43,5 +57,12 @@ class Pipeline():
 
             #data validation
             data_validation_artifact = self.start_data_validation(data_ingestion_artifact=data_ingestion_artifact)
+
+            #data transformation
+            data_transformation_artifact = self.start_data_transformation(
+                data_ingestion_artifact=data_ingestion_artifact,
+                data_validation_artifact=data_validation_artifact
+            )
+
         except Exception as e:
             raise BackorderException(e,sys) from e

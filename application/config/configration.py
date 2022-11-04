@@ -145,7 +145,8 @@ class Configration:
             data_transformation_config = DataTransformationConfig(
                 preprocessed_object_file_path=preprocesses_object_file_path,
                 transformed_test_dir=transformed_test_dir,
-                transformed_train_dir=transformed_train_dir
+                transformed_train_dir=transformed_train_dir,
+                
             )
 
             logging.info(f"Data Transformation Config: {data_transformation_config}")
