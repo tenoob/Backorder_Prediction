@@ -1,5 +1,6 @@
 import yaml
 from application.exception import BackorderException
+from application.logger import logging
 from application.constant import *
 import os,sys
 import pandas as pd
@@ -25,6 +26,12 @@ def load_data(file_path:str , schema_file_path:str) -> pd.DataFrame:
         schema = dataset_schema[DATASET_SCHEMA_COLUMNS_KEY]
 
         dataframe = pd.read_csv(file_path,usecols=dataset_schema[COLUMNS_TO_USE_KEY])
+
+
+        #droping rows which has target as nan
+        logging.info(f"Shape of the File: {dataframe.shape}")
+        
+
 
         errror_message = ""
 
@@ -85,6 +92,6 @@ def load_numpy_array_data(file_path: str) -> np.array:
     """
     try:
         with open(file_path,'rb') as file_obj:
-            return np.load(file_obj)
+            return np.load(file_obj,allow_pickle=True)
     except Exception as e:
         raise BackorderException(e,sys) from e

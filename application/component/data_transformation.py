@@ -36,6 +36,7 @@ class DataTransformation:
             dataset_schema = read_yaml_file(file_path=schema_file_path)
             numerical_columns = dataset_schema[NUMERICAL_COLUMN_KEY]
             categorical_columns = dataset_schema[CATEGORICAL_COLUMN_KEY]
+            target_column_name = dataset_schema[TARGET_COLUMN_KEY]
 
             accepted_componets = dataset_schema[ACCEPTED_VAIRENCE_KEY]
             logging.info(f"Accepted Varience: {accepted_componets}")
@@ -51,7 +52,10 @@ class DataTransformation:
                 ('imputer',SimpleImputer(strategy='most_frequent')),
                 ('one_hot_encoder',OneHotEncoder()),
                 ('scaler',StandardScaler(with_mean=False)),
-                
+                ])
+
+            target_pipeline = Pipeline(steps=[
+                ('one_hot_encoder',OneHotEncoder())
             ])
 
             logging.info(f"Categorical columns: {categorical_columns}")
@@ -63,12 +67,12 @@ class DataTransformation:
                 ('categorical_pipeline',categorical_pipeline,categorical_columns)
             ])
 
+            
+
             preprocess = Pipeline([
                 ("part1",separete_preprocess),
-                ('pca',PCA(n_components=accepted_componets))
+                ('pca',PCA(n_components=accepted_componets)),
             ])
-
-
 
             return preprocess
         except Exception as e:
@@ -88,7 +92,7 @@ class DataTransformation:
 
             logging.info(f"Loading Training and Testing Data as DataFrame.")
 
-            train_df= load_data(file_path=train_file_path,
+            train_df = load_data(file_path=train_file_path,
                                 schema_file_path=schema_file_path)
 
             test_df = load_data(file_path=test_file_path,
@@ -98,12 +102,21 @@ class DataTransformation:
 
             target_column_name = schema[TARGET_COLUMN_KEY]
 
+            #droping rows with Nan in target column
+            logging.info(f"Droping Rows with Target Column as Nan")
+            train_df = train_df[train_df[target_column_name].notna()]
+            logging.info(f"Training File shape: {train_df.shape}")
+            test_df = test_df[test_df[target_column_name].notna()]
+            logging.info(f"Training File shape: {test_df.shape}")
+
+
             logging.info(f"Splitting Data into Input and Target feature for Trainng and Testing Dataframes.")
             input_feature_train_df = train_df.drop(columns=[target_column_name],axis=1)
-            target_feature_train_df = train_df[[target_column_name]]
+            target_feature_train_df = pd.get_dummies(train_df[target_column_name],drop_first=True)
+            #train_df[[target_column_name]]
             
             input_feature_test_df = test_df.drop(columns=[target_column_name],axis=1)
-            target_feature_test_df = test_df[[target_column_name]]
+            target_feature_test_df = pd.get_dummies(test_df[target_column_name],drop_first=True)
 
             logging.info(f"Training Dataframe Columns: {input_feature_train_df.columns}")
             logging.info(f"Testing Dataframe Columns: {input_feature_test_df.columns}")
