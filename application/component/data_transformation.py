@@ -113,10 +113,18 @@ class DataTransformation:
             logging.info(f"Splitting Data into Input and Target feature for Trainng and Testing Dataframes.")
             input_feature_train_df = train_df.drop(columns=[target_column_name],axis=1)
             target_feature_train_df = pd.get_dummies(train_df[target_column_name],drop_first=True)
+            logging.info(f"Data type of Training Target column: {target_feature_train_df.dtypes}")
+            target_feature_train_df.astype(int)
+            logging.info(f"Data type of Training Target column changed to: {target_feature_train_df.dtypes}")
+
             #train_df[[target_column_name]]
             
             input_feature_test_df = test_df.drop(columns=[target_column_name],axis=1)
             target_feature_test_df = pd.get_dummies(test_df[target_column_name],drop_first=True)
+            logging.info(f"Data type of Testing Target column: {target_feature_test_df.dtypes}")
+            target_feature_test_df.astype(int)
+            logging.info(f"Data type of Testing Target column: {target_feature_test_df.dtypes}")
+
 
             logging.info(f"Training Dataframe Columns: {input_feature_train_df.columns}")
             logging.info(f"Testing Dataframe Columns: {input_feature_test_df.columns}")
@@ -156,7 +164,7 @@ class DataTransformation:
                 is_transformed=True,
                 message="Data Transformation Successfull.",
                 transformed_test_file_path=transformed_test_file_path,
-                transformed_train_file_path=transformed_test_file_path,
+                transformed_train_file_path=transformed_train_file_path,
                 preprocessed_object_file_path=preprocessing_obj_file_path
             )
 
