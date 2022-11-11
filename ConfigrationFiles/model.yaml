@@ -6,12 +6,18 @@ grid_search:
     verbose: 2
 model_selection:
   module_0:
-    class: ModelClassName
-    module: module_of_model
+    class: LogisticRegression
+    module: sklearn.linear_model
     params:
-      param_name1: value1
-      param_name2: value2
+      fit_intercept: True
+      penalty: l2
+      solver: saga
+      max_iter: 100
     search_param_grid:
-      param_name:
-      - param_value1
-      - param_value2
+      penalty:
+      - l2
+      - l1
+      max_iter:
+      - 50
+      - 75
+      - 100
