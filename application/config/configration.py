@@ -168,6 +168,7 @@ class Configration:
             model_trainer_config_info = self.config_info[MODEL_TRAINER_CONFIG_KEY]
 
             trained_model_file_path = os.path.join(
+                model_trainer_artifact_dir,
                 model_trainer_config_info[MODEL_TRAINER_TRAINED_MODEL_DIR_KEY],
                 model_trainer_config_info[MODEL_TRAINER_TRAINED_MODEL_FILE_NAME_KEY]
             )
