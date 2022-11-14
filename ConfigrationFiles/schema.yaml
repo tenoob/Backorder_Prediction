@@ -1,5 +1,6 @@
 accepted_varience: 0.90
 
+
 columns:
   sku :  object
   national_inv :  float64
