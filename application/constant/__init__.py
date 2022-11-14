@@ -75,7 +75,14 @@ MODEL_TRAINER_MODEL_CONFIG_DIR_KEY = 'model_config_dir'
 MODEL_TRAINER_MODEL_CONFIG_FILE_NAME_KEY = 'model_config_file_name'
 
 #model.yaml related varibles
+MODEL_FILE_NAME = 'model.yaml'
+MODEL_FILE_PATH = os.path.join(
+    ROOT_DIR,
+    CONFIGRATION_DIR,
+    MODEL_FILE_NAME)
+
 GRID_SEARCH_KEY = 'grid_search'
+DATASET_BALANCING_KEY = 'dataset_balancing'
 MODULE_KEY = 'module'
 CLASS_KEY = 'class'
 MODEL_SELECTION_KEY = 'model_selection'

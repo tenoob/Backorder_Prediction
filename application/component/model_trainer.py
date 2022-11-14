@@ -91,7 +91,7 @@ class ModelTrainer:
 
 
             model_list = [model.best_model for model in grid_searched_best_model_list] #problem grid_search is None
-
+            logging.info(f"Selected Model List: {model_list}")
             logging.info(f"Evaluating all Trained model on Training and Testing Dataset")
 
             metric_info: MetricInfoArtifact = evaluate_classification_model(

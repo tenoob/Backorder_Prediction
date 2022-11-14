@@ -102,6 +102,7 @@ def evaluate_classification_model(
 
         if metric_info_artifact is None:
             logging.info(f"No model found with higher accuarcy then base accuracy and train test score within certain threshold")
+            raise Exception("Try some other Models")
 
         return metric_info_artifact
 

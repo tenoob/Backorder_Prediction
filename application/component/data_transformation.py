@@ -7,9 +7,12 @@ from application.constant import CATEGORICAL_COLUMN_KEY, NUMERICAL_COLUMN_KEY , 
 from application.entity.artifact_entity import DataIngestionArtifact, DataTransformationArtifact, DataValidationArtifact 
 from application.entity.config_entity import DataTransformationConfig
 from application.util.utililty import *
+from application.entity.model_factory import ModelFactory
 from application.util.col_dim_reduction import CustomTransformer
 from application.logger import logging
 from application.exception import BackorderException
+from imblearn.combine import SMOTETomek,SMOTEENN
+from collections import Counter
 import os,sys
 import numpy as np
 
@@ -67,16 +70,80 @@ class DataTransformation:
                 ('categorical_pipeline',categorical_pipeline,categorical_columns)
             ])
 
+            """#reading the model.yaml file for dataset_balancing
+            model_file = read_yaml_file(MODEL_FILE_PATH)
+            balancer = model_file[DATASET_BALANCING_KEY]
+            class_name = balancer[CLASS_KEY]
+            modeule_name = balancer[MODULE_KEY]
+            params = balancer[PARAM_KEY]
+
+            obj = ModelFactory.class_for_name(module_name=modeule_name,class_name=class_name)
+
+            model = obj()
+
+            model = ModelFactory.update_propery_of_class(model,params)
             
+            X_res ,y_res = model.fit_resample(x,y)"""
 
             preprocess = Pipeline([
                 ("part1",separete_preprocess),
+                #('dataset_balance',model),
                 ('pca',PCA(n_components=accepted_componets)),
             ])
 
             return preprocess
         except Exception as e:
             raise BackorderException(e,sys) from e
+
+    def dataset_scaling(self,x,y) -> pd.DataFrame:
+        try:
+            logging.info(f"Original Dataset shape: {x.shape} \n Targer values: {y.shape}")
+
+
+            schema = read_yaml_file(file_path=self.data_validation_artifact.schema_file_path)
+            numerical_columns = schema[NUMERICAL_COLUMN_KEY]
+            categorical_columns = schema[CATEGORICAL_COLUMN_KEY]
+
+            #reading the model.yaml file for dataset_balancing
+            model_file = read_yaml_file(MODEL_FILE_PATH)
+            balancer = model_file[DATASET_BALANCING_KEY]
+            class_name = balancer[CLASS_KEY]
+            modeule_name = balancer[MODULE_KEY]
+            params = balancer[PARAM_KEY]
+
+            
+            """numerical_pipeline = Pipeline(steps=[
+                #("imputer",SimpleImputer(strategy='median')),
+                ])
+
+            categorical_pipeline = Pipeline(steps=[
+                #('imputer',SimpleImputer(strategy='most_frequent')),
+                ('one_hot_encoder',OneHotEncoder()),
+                ])
+            
+            separete_preprocess = ColumnTransformer(
+                transformers=[
+                ('numerical_pipeline',numerical_pipeline,numerical_columns),
+                ('categorical_pipeline',categorical_pipeline,categorical_columns)
+            ])"""
+
+
+            #x = separete_preprocess.fit_transform(x)
+
+            obj = ModelFactory.class_for_name(module_name=modeule_name,class_name=class_name)
+
+            model = obj()
+
+            model = ModelFactory.update_propery_of_class(model,params)
+
+            X_res ,y_res = model.fit_resample(x,y)
+
+
+            logging.info(f"Reshaped Dataset shape:{x.shape} \n Targer values: {y_res.value_counts()}")
+            return X_res,y_res
+        except Exception as e:
+            raise BackorderException(e,sys) from e
+
 
 
     def initate_data_transformation(self) -> DataTransformationArtifact:
@@ -101,6 +168,7 @@ class DataTransformation:
             schema = read_yaml_file(schema_file_path)
 
             target_column_name = schema[TARGET_COLUMN_KEY]
+            
 
             #droping rows with Nan in target column
             logging.info(f"Droping Rows with Target Column as Nan")
@@ -118,6 +186,13 @@ class DataTransformation:
             logging.info(f"Data type of Training Target column changed to: {target_feature_train_df.dtypes}")
 
             #train_df[[target_column_name]]
+
+            #Dataset Balancing
+            input_feature_train_df,target_feature_train_df = self.dataset_scaling(
+                                                                x=input_feature_train_df,
+                                                                y=target_feature_train_df,
+                                                                )
+
             
             input_feature_test_df = test_df.drop(columns=[target_column_name],axis=1)
             target_feature_test_df = pd.get_dummies(test_df[target_column_name],drop_first=True)

@@ -4,6 +4,14 @@ grid_search:
   params:
     cv: 5
     verbose: 2
+
+dataset_balancing:
+  class: RandomUnderSampler
+  module: imblearn.under_sampling
+  params:
+    random_state: 50
+
+
 model_selection:
   module_0:
     class: LogisticRegression
@@ -17,7 +25,13 @@ model_selection:
       penalty:
       - l2
       - l1
+      - elasticnet
+      - none
       max_iter:
       - 50
-      - 75
       - 100
+      - 200
+      - 500
+      fit_intercept:
+      - True
+      - False
