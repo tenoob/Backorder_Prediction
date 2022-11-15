@@ -2,7 +2,7 @@
 from application.constant import *
 from application.logger import logging
 from application.exception import BackorderException
-from application.entity.config_entity import DataIngestionConfig, DataValidationConfig, TrainingPipelineCongif , DataTransformationConfig , ModelTrainerConfig
+from application.entity.config_entity import DataIngestionConfig, DataValidationConfig, TrainingPipelineCongif , DataTransformationConfig , ModelTrainerConfig , ModelEvaluationConfig
 from application.entity.artifact_entity import DataIngestionArtifact
 from application.util.utililty import read_yaml_file
 from urllib import response
@@ -189,6 +189,28 @@ class Configration:
             logging.info(f"Model Trainer Config: {model_trainer_config}")
 
             return model_trainer_config
+        except Exception as e:
+            raise BackorderException(e,sys) from e
+
+
+    def get_model_evaluation_config(self) -> ModelEvaluationConfig:
+        try:
+            model_evaluation_config = self.config_info[MODEL_EVALUATION_CONFIG_KEY]
+
+            artifact_dir = os.path.join(
+                self.training_pipeline_config.artifact_dir,
+                MODEL_EVALUATION_ARTIFACT_KEY)
+
+            model_evaluation_file_path = os.path.join(
+                artifact_dir,
+                model_evaluation_config[MODEL_EVALUATION_FILE_NAME_KEY])
+
+            model_evaluation_config = ModelEvaluationConfig(
+                model_evaluation_file_path=model_evaluation_file_path,
+                time_stamp=self.current_time_stamp)
+
+            logging.info(f"Model Evaluation Config: {model_evaluation_config}")
+            return model_evaluation_config
         except Exception as e:
             raise BackorderException(e,sys) from e
     
