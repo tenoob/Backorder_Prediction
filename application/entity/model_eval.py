@@ -82,7 +82,7 @@ def evaluate_classification_model(
 
             #if model acc is greater than base accuracy and train and test score is within certain threshold
             #we will accept that model as accepted model
-            if model_accuracy >= base_accuracy and diff_train_test_acc < 0.05:
+            if model_accuracy >= base_accuracy and diff_train_test_acc <= 0.1:
                 base_accuracy = model_accuracy
 
                 metric_info_artifact = MetricInfoArtifact(
