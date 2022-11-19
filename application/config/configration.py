@@ -2,10 +2,8 @@
 from application.constant import *
 from application.logger import logging
 from application.exception import BackorderException
-from application.entity.config_entity import DataIngestionConfig, DataValidationConfig, TrainingPipelineCongif , DataTransformationConfig , ModelTrainerConfig , ModelEvaluationConfig
-from application.entity.artifact_entity import DataIngestionArtifact
+from application.entity.config_entity import DataIngestionConfig, DataValidationConfig, TrainingPipelineCongif , DataTransformationConfig , ModelTrainerConfig , ModelEvaluationConfig , ModelPusherConfig
 from application.util.utililty import read_yaml_file
-from urllib import response
 import os,sys
 
 class Configration:
@@ -211,6 +209,21 @@ class Configration:
 
             logging.info(f"Model Evaluation Config: {model_evaluation_config}")
             return model_evaluation_config
+        except Exception as e:
+            raise BackorderException(e,sys) from e
+
+    def get_model_pusher_config(self) -> ModelPusherConfig:
+        try:
+            model_pusher_config_info = self.config_info[MODEL_PUSHER_CONFIG_KEY]
+
+            export_dir_path = os.path.join(
+                ROOT_DIR,
+                model_pusher_config_info[MODEL_PUSHER_MODEL_EXPORT_DIR_KEY],
+                self.current_time_stamp)
+
+            model_pusher_config = ModelPusherConfig(export_dir_path=export_dir_path)
+            logging.info(f"Model Pusher Config: {model_pusher_config}")
+            return model_pusher_config
         except Exception as e:
             raise BackorderException(e,sys) from e
     
