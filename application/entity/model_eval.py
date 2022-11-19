@@ -47,7 +47,7 @@ def evaluate_classification_model(
             #getting model name based on model object
             model_name = str(model)
             logging.info(f"{'>>'*30} Started evaluating model: [{type(model).__name__}] {'<<'*30}")
-            
+            logging.info(f"Index number: {index_number}")
             #getting prediction for Training and Testing Dataset
             y_train_pred = model.predict(x_train)
             y_test_pred = model.predict(x_test)
@@ -80,6 +80,7 @@ def evaluate_classification_model(
             logging.info(f"Train Report: \n{train_report}")
             logging.info(f"Test Report: \n{test_report}")
 
+            logging.info(f"Base accuracy: {base_accuracy}")
             #if model acc is greater than base accuracy and train and test score is within certain threshold
             #we will accept that model as accepted model
             if model_accuracy >= base_accuracy and diff_train_test_acc <= 0.1:
@@ -102,7 +103,7 @@ def evaluate_classification_model(
 
         if metric_info_artifact is None:
             logging.info(f"No model found with higher accuarcy then base accuracy and train test score within certain threshold")
-            raise Exception("Try some other Models")
+            #raise Exception("Try some other Models")
 
         return metric_info_artifact
 
