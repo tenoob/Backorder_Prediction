@@ -38,7 +38,8 @@ class ModelEvaluation:
             if BEST_MODEL_KEY not in model_eval_file_content:
                 return model
             
-            model = load_data(file_path=model_eval_file_content[BEST_MODEL_KEY][MODEL_PATH_KEY])
+            model = load_object(file_path=model_eval_file_content[BEST_MODEL_KEY][MODEL_PATH_KEY])
+            logging.info(f"Best model: {model}")
             return model
         except Exception as e:
             raise BackorderException(e,sys) from e
@@ -81,8 +82,8 @@ class ModelEvaluation:
 
     def initiate_model_evaluation(self) -> ModelEvaluationArtifact:
         try:
-            trained_model_path = self.model_trainer_artifact.trained_model_file_path
-            trained_model_object = load_object(file_path=trained_model_path)
+            trained_model_file_path = self.model_trainer_artifact.trained_model_file_path
+            trained_model_object = load_object(file_path=trained_model_file_path)
 
             train_file_path = self.data_ingestion_artifact.train_file_path
             test_file_path = self.data_ingestion_artifact.test_file_path
@@ -101,9 +102,12 @@ class ModelEvaluation:
             target_column_name = schema_content[TARGET_COLUMN_KEY]
 
             #separating target column from df
-            logging.info(f"Converting target column into numpy array")
-            train_target_arr = np.array(train_dataframe[target_column_name])
-            test_target_arr = np.array(test_dataframe[target_column_name])
+            logging.info(f"One Hot Encoding and Converting target column into numpy array")
+            train_target_arr = pd.get_dummies(train_dataframe[target_column_name],drop_first=True)
+            train_target_arr = np.array(train_target_arr)
+
+            test_target_arr = pd.get_dummies(test_dataframe[target_column_name],drop_first=True)
+            test_target_arr = np.array(test_target_arr)
             logging.info(f"Conversion of Target column into numpy array Completed")
 
             #dropping target from df
@@ -113,14 +117,16 @@ class ModelEvaluation:
             logging.info(f'Dropping of Target column from dataframe Completed')
 
             current_best_model = self.get_best_model()
+            logging.info(f"Current best model: {current_best_model}")
 
             if current_best_model is None:
                 logging.info(f"No Existing Model Found hence Accepted Trained Model")
                 model_evaluation_artifact = ModelEvaluationArtifact(
                     is_model_accepted=True,
-                    evaluted_model_path=trained_model_path)
+                    evaluted_model_path=trained_model_file_path)
 
-                self.update_evaluation_report(model_eval_artifact=model_evaluation_artifact)
+                self.update_evaluation_report(model_evaluation_artifact)
+                logging.info(f"Model accepted. Model eval artifact {model_evaluation_artifact} created")
                 return model_evaluation_artifact
             
             model_list = [current_best_model,trained_model_object]
@@ -137,25 +143,25 @@ class ModelEvaluation:
             logging.info(f"Model Evaluation Completed. Model Metric Artifact: {metric_info_artifact}")
 
             if metric_info_artifact is None:
-                metric_info_artifact = ModelEvaluationArtifact(
+                response = ModelEvaluationArtifact(
                     is_model_accepted=False,
-                    evaluted_model_path=trained_model_path
+                    evaluted_model_path=trained_model_file_path
                 )
                 logging.info(metric_info_artifact)
-                return metric_info_artifact
+                return response
             
             if metric_info_artifact.index_number == 1:
                 model_evaluation_artifact = ModelEvaluationArtifact(
                     is_model_accepted=True,
-                    evaluted_model_path=trained_model_path
+                    evaluted_model_path=trained_model_file_path
                 )
-                self.update_evaluation_report(model_eval_artifact=model_evaluation_artifact)
+                self.update_evaluation_report(model_evaluation_artifact)
                 logging.info(f"Model Accepted. Model Evaluation Artifact: {model_evaluation_artifact} created")
             else:
                 logging.info(f"Trained model is not better then existing model hence NOT ACCEPTED")
                 model_evaluation_artifact = ModelEvaluationArtifact(
                     is_model_accepted=False,
-                    evaluted_model_path=trained_model_path
+                    evaluted_model_path=trained_model_file_path
                 )
                 
             return model_evaluation_artifact
