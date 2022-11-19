@@ -4,7 +4,8 @@ from application.component.data_validation import DataValidation
 from application.component.data_transformation import DataTransformation
 from application.component.model_trainer import ModelTrainer
 from application.component.model_evaluation import ModelEvaluation
-from application.entity.artifact_entity import DataIngestionArtifact, DataValidationArtifact , DataTransformationArtifact , ModelTrainerArtifact , ModelEvaluationArtifact
+from application.component.model_pusher import ModelPusher
+from application.entity.artifact_entity import DataIngestionArtifact, DataValidationArtifact , DataTransformationArtifact , ModelTrainerArtifact , ModelEvaluationArtifact ,ModelPusherArtifact
 from application.logger import logging
 from application.exception import BackorderException
 from application.config.configration import Configration
@@ -76,6 +77,16 @@ class Pipeline():
         except Exception as e:
             raise BackorderException(e,sys) from e
 
+    def start_model_pusher(self, model_eval_artifact: ModelEvaluationArtifact) -> ModelPusherArtifact:
+        try:
+            model_pusher = ModelPusher(
+                model_pusher_config=self.config.get_model_pusher_config(),
+                model_eval_aritfact=model_eval_artifact
+            )
+
+            return model_pusher.initiate_model_pusher()
+        except Exception as e:
+            raise BackorderException(e,sys) from e
 
     def run_pipeline(self):
         try:
@@ -100,5 +111,13 @@ class Pipeline():
                 data_validation_artifact=data_validation_artifact,
                 model_trainer_artifact=model_training_artifact)
 
+            #model pusher
+            if model_evaluation_artifact.is_model_accepted:
+                model_pusher_artifact = self.start_model_pusher(model_eval_artifact=model_evaluation_artifact)
+                logging.info(f"model pusher artifact: {model_pusher_artifact}")
+            else:
+                logging.info(f"Trained Model Rejected")
+            
+            logging.info(f"Pipeline Over")
         except Exception as e:
             raise BackorderException(e,sys) from e
