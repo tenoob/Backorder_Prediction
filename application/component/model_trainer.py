@@ -129,7 +129,7 @@ class ModelTrainer:
                 trained_model_file_path=trained_model_file_path
             )
 
-                  
+            logging.info(f"model object: {model_object}")
             logging.info(f"Model Trainer Artifact: {model_trainer_artifact}")
             return model_trainer_artifact
 
