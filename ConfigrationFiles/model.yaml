@@ -17,11 +17,11 @@ model_selection:
     class: DecisionTreeClassifier
     module: sklearn.tree
     params:
-      max_depth: 9
+      max_depth: 10
     search_param_grid:
       max_depth:
       - 9
-      - None
+      - 5
       min_samples_split:
       - 2
       - 5
@@ -29,12 +29,11 @@ model_selection:
       - 1
       - 4
       max_features:
-      - auto
       - sqrt
       - log2
       max_leaf_nodes:
       - 100
-      - None
+      - 50
       class_weight:
       - balanced
 
@@ -42,14 +41,11 @@ model_selection:
     class: RandomForestClassifier
     module: sklearn.ensemble
     params:
-      max_depth: None
-      min_samples_split: 10
-      min_samples_leaf: 10
-      max_features: 100
+      max_features: sqrt
     search_param_grid:
       max_depth:
       - 9
-      - None
+      - 5
       min_samples_split:
       - 2
       - 5
@@ -61,7 +57,7 @@ model_selection:
       - log2
       max_leaf_nodes:
       - 100
-      - None
+      - 50
 
   
 
