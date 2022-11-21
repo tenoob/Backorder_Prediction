@@ -96,6 +96,7 @@ MODEL_EVALUATION_ARTIFACT_KEY = 'model_evaluation'
 BEST_MODEL_KEY = 'best_model'
 HISTORY_KEY = 'history'
 MODEL_PATH_KEY = 'model_path'
+MODEL_ACC_KEY = 'model_acc'
 
 #Model Pusher related variables
 MODEL_PUSHER_CONFIG_KEY = 'model_pusher_config'
