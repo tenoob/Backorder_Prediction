@@ -25,22 +25,23 @@ class ModelEvaluation:
     def get_best_model(self):
         try:
             model = None
-
+            model_acc = None
             model_evaluation_file_path = self.model_evaluation_config.model_evaluation_file_path
 
             if not os.path.exists(model_evaluation_file_path):
                 write_yaml_file(file_path=model_evaluation_file_path)
-                return model
+                return model , model_acc
 
             model_eval_file_content = read_yaml_file(file_path=model_evaluation_file_path)
             model_eval_file_content = dict() if model_eval_file_content is None else model_eval_file_content
 
             if BEST_MODEL_KEY not in model_eval_file_content:
-                return model
+                return model , model_acc
             
             model = load_object(file_path=model_eval_file_content[BEST_MODEL_KEY][MODEL_PATH_KEY])
-            logging.info(f"Best model: {model}")
-            return model
+            model_acc = model_eval_file_content[BEST_MODEL_KEY][MODEL_ACC_KEY]
+            logging.info(f"Best model: {model} \n Best model acc: {model_acc}")
+            return model,model_acc
         except Exception as e:
             raise BackorderException(e,sys) from e
 
@@ -53,6 +54,7 @@ class ModelEvaluation:
             model_eval_content = dict() if model_eval_content is None else model_eval_content
 
             current_deployed_model = None
+
             if BEST_MODEL_KEY in model_eval_content:
                 current_deployed_model = model_eval_content[BEST_MODEL_KEY]
             
@@ -60,7 +62,8 @@ class ModelEvaluation:
 
             eval_result = {
                 BEST_MODEL_KEY:{
-                    MODEL_PATH_KEY: model_eval_artifact.evaluted_model_path
+                    MODEL_PATH_KEY: model_eval_artifact.evaluted_model_path,
+                    MODEL_ACC_KEY: float(model_eval_artifact.model_acc)
                 }
             }
 
@@ -84,7 +87,9 @@ class ModelEvaluation:
         try:
             trained_model_file_path = self.model_trainer_artifact.trained_model_file_path
             trained_model_object = load_object(file_path=trained_model_file_path)
+            trained_model_acc = self.model_trainer_artifact.model_accuracy
 
+            logging.info(f"Trained model acc: {trained_model_acc}")
             train_file_path = self.data_ingestion_artifact.train_file_path
             test_file_path = self.data_ingestion_artifact.test_file_path
 
@@ -116,14 +121,15 @@ class ModelEvaluation:
             test_dataframe.drop(target_column_name,axis=1,inplace=True)
             logging.info(f'Dropping of Target column from dataframe Completed')
 
-            current_best_model = self.get_best_model()
-            logging.info(f"Current best model: {current_best_model}")
+            current_best_model , current_best_model_acc = self.get_best_model()
+            logging.info(f"Current best model: {current_best_model} \n Current Best Model Accuracy: {current_best_model_acc}")
 
             if current_best_model is None:
                 logging.info(f"No Existing Model Found hence Accepted Trained Model")
                 model_evaluation_artifact = ModelEvaluationArtifact(
                     is_model_accepted=True,
-                    evaluted_model_path=trained_model_file_path)
+                    evaluted_model_path=trained_model_file_path,
+                    model_acc=trained_model_acc)
 
                 self.update_evaluation_report(model_evaluation_artifact)
                 logging.info(f"Model accepted. Model eval artifact {model_evaluation_artifact} created")
@@ -137,23 +143,29 @@ class ModelEvaluation:
                 y_train=train_target_arr,
                 x_test=test_dataframe,
                 y_test=test_target_arr,
-                base_accuracy=self.model_trainer_artifact.model_accuracy
+                base_accuracy=current_best_model_acc
             )
 
             logging.info(f"Model Evaluation Completed. Model Metric Artifact: {metric_info_artifact}")
 
+            
             if metric_info_artifact is None:
                 response = ModelEvaluationArtifact(
                     is_model_accepted=False,
-                    evaluted_model_path=trained_model_file_path
+                    evaluted_model_path=trained_model_file_path,
+                    model_acc=trained_model_acc
                 )
                 logging.info(metric_info_artifact)
                 return response
             
+            #setting model_acc as accuracy during evaluation
+            trained_model_acc = metric_info_artifact.model_accuracy
+
             if metric_info_artifact.index_number == 1:
                 model_evaluation_artifact = ModelEvaluationArtifact(
                     is_model_accepted=True,
-                    evaluted_model_path=trained_model_file_path
+                    evaluted_model_path=trained_model_file_path,
+                    model_acc=trained_model_acc
                 )
                 self.update_evaluation_report(model_evaluation_artifact)
                 logging.info(f"Model Accepted. Model Evaluation Artifact: {model_evaluation_artifact} created")
@@ -161,7 +173,8 @@ class ModelEvaluation:
                 logging.info(f"Trained model is not better then existing model hence NOT ACCEPTED")
                 model_evaluation_artifact = ModelEvaluationArtifact(
                     is_model_accepted=False,
-                    evaluted_model_path=trained_model_file_path
+                    evaluted_model_path=trained_model_file_path,
+                    model_acc=trained_model_acc
                 )
                 
             return model_evaluation_artifact
