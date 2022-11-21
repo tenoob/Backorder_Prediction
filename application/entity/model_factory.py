@@ -86,7 +86,7 @@ class ModelFactory:
 
                     #get all the params of the model
                     model_obj_property_data = dict(model_initialization_config[PARAM_KEY])
-
+                    logging.info(f"model_obj_property_data: {model_obj_property_data}")
                     model = ModelFactory.update_propery_of_class(
                         instance_ref=model,
                         property_data=model_obj_property_data)
