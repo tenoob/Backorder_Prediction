@@ -8,5 +8,5 @@ PyYAML
 evidently
 dill
 imblearn
-patoolib==1.12
+patool
 -e .
