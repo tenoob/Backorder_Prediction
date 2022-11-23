@@ -210,8 +210,8 @@ def render_log_dir(req_path):
         "parent_folder": os.path.dirname(abs_path),
         "parent_label": abs_path
     }
-    return render_template('log_files.html', result=result)
+    return render_template('log.html', result=result)
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
