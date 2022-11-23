@@ -32,7 +32,7 @@ MEDIAN_HOUSING_VALUE_KEY = "median_house_value"
 app = Flask(__name__)
 
 
-@app.route('/artifact', defaults={'req_path': 'housing'})
+@app.route('/artifact', defaults={'req_path': 'application'})
 @app.route('/artifact/<path:req_path>')
 def render_artifact_dir(req_path):
     os.makedirs("housing", exist_ok=True)
