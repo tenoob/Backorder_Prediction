@@ -231,7 +231,7 @@ class Pipeline(Thread):
             raise BackorderException(e,sys) from e
 
     @classmethod
-    def get_experiment_status(cls , limit: int=5) -> pd.DataFrame:
+    def get_experiments_status(cls , limit: int=5) -> pd.DataFrame:
         try:
             if os.path.exists(Pipeline.experiment_file_path):
                 df = pd.read_csv(Pipeline.experiment_file_path)
