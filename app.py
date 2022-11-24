@@ -26,8 +26,8 @@ MODEL_DIR = os.path.join(ROOT_DIR, SAVED_MODELS_DIR_NAME)
 
 
 
-HOUSING_DATA_KEY = "housing_data"
-MEDIAN_HOUSING_VALUE_KEY = "median_house_value"
+BACKORDER_DATA_KEY = "backorder_data"
+WENT_ON_BACKORDER_KEY = "went_on_oackorder"
 
 app = Flask(__name__)
 
@@ -102,8 +102,8 @@ def train():
 @app.route('/predict', methods=['GET', 'POST'])
 def predict():
     context = {
-        HOUSING_DATA_KEY: None,
-        MEDIAN_HOUSING_VALUE_KEY: None
+        BACKORDER_DATA_KEY: None,
+        WENT_ON_BACKORDER_KEY: None
     }
 
     if request.method == 'POST':
@@ -131,8 +131,8 @@ def predict():
         housing_predictor = BackOrderPredictor(model_dir=MODEL_DIR)
         median_housing_value = housing_predictor.predict(X=housing_df)
         context = {
-            HOUSING_DATA_KEY: housing_data.get_housing_data_as_dict(),
-            MEDIAN_HOUSING_VALUE_KEY: median_housing_value,
+            BACKORDER_DATA_KEY: housing_data.get_housing_data_as_dict(),
+            WENT_ON_BACKORDER_KEY: median_housing_value,
         }
         return render_template('predict.html', context=context)
     return render_template("predict.html", context=context)

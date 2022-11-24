@@ -3,7 +3,7 @@
 {% block head %}
 
 
-<title>Housing Estimator</title>
+<title>BackOrder Estimator</title>
 {% endblock %}
 
 {% block content %}
@@ -13,70 +13,174 @@
 
 
         <form action="/predict" method="post">
-            <legend>Housing Estimation Form</legend>
+            <legend>BackOrder Estimation Form</legend>
             <div class="mb-3">
-                <label class="form-label">Longitude</label>
-                <input class="form-control" type="text" name="longitude" placeholder="Enter a value of longitude"
+                <label class="form-label">National_Inv</label>
+                <input class="form-control" type="text" name="National_Inv" placeholder="Enter a value of National_Inv"
                     required />
             </div>
             <div class="mb-3">
-                <label class="form-label">Latitude</label>
-                <input class="form-control" type="text" name="latitude" placeholder="Enter a value of latitude"
-                    required />
-
-            </div>
-            <div class="mb-3">
-                <label class="form-label">House Median Age</label>
-                <input class="form-control" type="text" name="housing_median_age"
-                    placeholder="Enter a value of housing_median_age" />
-
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Total Rooms</label>
-                <input class="form-control" type="text" name="total_rooms" placeholder="Enter a value of total_rooms"
+                <label class="form-label">Lead_time</label>
+                <input class="form-control" type="text" name="Lead_time" placeholder="Enter a value of Lead_time"
                     required />
 
             </div>
             <div class="mb-3">
-                <label class="form-label">Total Bedrooms</label>
-                <input class="form-control" type="text" name="total_bedrooms"
-                    placeholder="Enter a value of total_bedrooms" required />
+                <label class="form-label">In_Transit_Qty</label>
+                <input class="form-control" type="text" name="In_Transit_Qty"
+                    placeholder="Enter a value of In_Transit_Qty" />
+
             </div>
             <div class="mb-3">
-                <label class="form-label">Population</label>
-                <input class="form-control" type="text" name="population" placeholder="Enter a value of population"
+                <label class="form-label">Forecast_3_Month</label>
+                <input class="form-control" type="text" name="Forecast_3_Month" placeholder="Enter a value of Forecast_3_Month"
+                    required />
+
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Forecast_6_Month</label>
+                <input class="form-control" type="text" name="Forecast_6_Month" placeholder="Enter a value of Forecast_6_Month"
+                    required />
+
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Forecast_9_Month</label>
+                <input class="form-control" type="text" name="Forecast_9_Month" placeholder="Enter a value of Forecast_9_Month"
+                    required />
+
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Sales_1_Month</label>
+                <input class="form-control" type="text" name="Sales_1_Month"
+                    placeholder="Enter a value of Sales_1_Month" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Sales_3_Month</label>
+                <input class="form-control" type="text" name="Sales_3_Month"
+                    placeholder="Enter a value of Sales_3_Month" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Sales_6_Month</label>
+                <input class="form-control" type="text" name="Sales_6_Month"
+                    placeholder="Enter a value of Sales_6_Month" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Sales_9_Month</label>
+                <input class="form-control" type="text" name="Sales_9_Month"
+                    placeholder="Enter a value of Sales_9_Month" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Min_Bank</label>
+                <input class="form-control" type="text" name="Min_Bank" placeholder="Enter a value of Min_Bank"
                     required />
             </div>
             <div class="mb-3">
-                <label class="form-label">Households</label>
-                <input class="form-control" type="text" name="households" placeholder="Enter a value of households"
+                <label class="form-label">Pieces_past_due</label>
+                <input class="form-control" type="text" name="Pieces_past_due" placeholder="Enter a value of Pieces_past_due"
                     required />
             </div>
             <div class="mb-3">
-                <label class="form-label">Median Income</label>
-                <input class="form-control" type="text" name="median_income"
-                    placeholder="Enter a value of median_income" required />
+                <label class="form-label">Perf_6_Month_Avg</label>
+                <input class="form-control" type="text" name="Perf_6_Month_Avg"
+                    placeholder="Enter a value of Perf_6_Month_Avg" required />
             </div>
             <div class="mb-3">
-                <label class="form-label">Ocean Proximity</label>
-                <select class="form-control" name="ocean_proximity" placeholder="Enter a value of ocean_proximity"
+                <label class="form-label">Perf_12_Month_Avg</label>
+                <input class="form-control" type="text" name="Perf_12_Month_Avg"
+                    placeholder="Enter a value of Perf_6_Month_Avg" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Local_Bo_Qty</label>
+                <input class="form-control" type="text" name="Local_Bo_Qty"
+                    placeholder="Enter a value of Local_Bo_Qty" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label"></label>
+                <select class="form-control" name="Potential_Issue" placeholder="Enter a value of Potential_Issue"
                     required>
 
-                    <option value="<1H OCEAN">
-                        &lt;1H OCEAN
+                    <option value="No">
+                        &lt;No
                     </option>
-                    <option value="INLAND">
-                        INLAND
+                    <option value="Yes">
+                        Yes
                     </option>
-                    <option value="NEAR BAY">
-                        NEAR BAY
+                    
+
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label"></label>
+                <select class="form-control" name="Deck_Risk" placeholder="Enter a value of Deck_Risk"
+                    required>
+
+                    <option value="No">
+                        &lt;No
                     </option>
-                    <option value="NEAR OCEAN">
-                        NEAR OCEAN
+                    <option value="Yes">
+                        Yes
                     </option>
-                    <option value="ISLAND">
-                        ISLAND
+                    
+
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label"></label>
+                <select class="form-control" name="OE_Constraint" placeholder="Enter a value of OE_Constraint"
+                    required>
+
+                    <option value="No">
+                        &lt;No
                     </option>
+                    <option value="Yes">
+                        Yes
+                    </option>
+                    
+
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label"></label>
+                <select class="form-control" name="PPAP_Risk" placeholder="Enter a value of PPAP_Risk"
+                    required>
+
+                    <option value="No">
+                        &lt;No
+                    </option>
+                    <option value="Yes">
+                        Yes
+                    </option>
+                    
+
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label"></label>
+                <select class="form-control" name="Stop_Auto_Buy" placeholder="Enter a value of Stop_Auto_Buy"
+                    required>
+
+                    <option value="No">
+                        &lt;No
+                    </option>
+                    <option value="Yes">
+                        Yes
+                    </option>
+                    
+
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label"></label>
+                <select class="form-control" name="Rev_Stop" placeholder="Enter a value of Rev_Stop"
+                    required>
+
+                    <option value="No">
+                        &lt;No
+                    </option>
+                    <option value="Yes">
+                        Yes
+                    </option>
+                    
 
                 </select>
             </div>
@@ -91,12 +195,12 @@
     <div class="col-md-6 col-sm-12 col-xs-6 col-lg-6">
         <div class="card">
             <div class="card-header">
-              California housing price
+              BackOrder
             </div>
             <div class="card-body">
         {% if context['housing_data'] is not none %}
         <table class="table table-striped">
-            <caption>Califoria Housing Prediction </caption>
+            <caption> Prediction </caption>
             <tr>
                 <th>Input Feature</th>
                 <th>Feature Value</th>
