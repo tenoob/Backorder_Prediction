@@ -14,8 +14,7 @@ from application.config.configration import Configration
 from collections import namedtuple
 from datetime import datetime
 from threading import Thread
-from typing import List
-from flask import Flask
+
 
 import pandas as pd
 import uuid
@@ -38,7 +37,7 @@ class Pipeline(Thread):
 
             Pipeline.experiment_file_path = os.path.join(
                 config.training_pipeline_config.artifact_dir,
-                EXPERIMENT_DIR_KEY,
+                EXPERIMENT_DIR_NAME,
                 EXPERIMENT_FILE_NAME
             )
 

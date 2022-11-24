@@ -35,7 +35,7 @@ app = Flask(__name__)
 @app.route('/artifact', defaults={'req_path': 'application'})
 @app.route('/artifact/<path:req_path>')
 def render_artifact_dir(req_path):
-    os.makedirs("housing", exist_ok=True)
+    os.makedirs("application", exist_ok=True)
     # Joining the base and the requested path
     print(f"req_path: {req_path}")
     abs_path = os.path.join(req_path)
@@ -210,7 +210,7 @@ def render_log_dir(req_path):
         "parent_folder": os.path.dirname(abs_path),
         "parent_label": abs_path
     }
-    return render_template('log.html', result=result)
+    return render_template('log_files.html', result=result)
 
 
 if __name__ == "__main__":
