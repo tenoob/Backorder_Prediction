@@ -30,7 +30,7 @@ class ModelPusher:
             )
 
             logging.info(f"Exported Model File: {export_model_file_path}")
-            os.makedirs(export_model_file_path,exist_ok=True)
+            os.makedirs(export_dir,exist_ok=True)
 
             shutil.copy(src=evaluated_model_file_path , dst= export_model_file_path)
 
