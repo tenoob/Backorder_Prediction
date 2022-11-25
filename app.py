@@ -107,32 +107,63 @@ def predict():
     }
 
     if request.method == 'POST':
-        longitude = float(request.form['longitude'])
-        latitude = float(request.form['latitude'])
-        housing_median_age = float(request.form['housing_median_age'])
-        total_rooms = float(request.form['total_rooms'])
-        total_bedrooms = float(request.form['total_bedrooms'])
-        population = float(request.form['population'])
-        households = float(request.form['households'])
-        median_income = float(request.form['median_income'])
-        ocean_proximity = request.form['ocean_proximity']
+        national_inv = float(request.form['National_Inv'])
+        lead_time = float(request.form['Lead_time'])
+        in_transit_qty = float(request.form['In_Transit_Qty'])
+        forecast_3_m = float(request.form['Forecast_3_Month'])
+        forecast_6_m = float(request.form['Forecast_6_Month'])
+        forecast_9_m = float(request.form['Forecast_9_Month'])
+        sales_1_m = float(request.form['Sales_1_Month'])
+        sales_3_m = float(request.form['Sales_3_Month'])
+        sales_6_m = float(request.form['Sales_6_Month'])
+        sales_9_m = float(request.form['Sales_9_Month'])
+        min_bank = float(request.form['Min_Bank'])
+        pieces_past_due = float(request.form['Pieces_past_due'])
+        Perf_6_Month_Avg = float(request.form['Perf_6_Month_Avg'])
+        Perf_12_Month_Avg = float(request.form['Perf_12_Month_Avg'])
+        Local_Bo_Qty = float(request.form['Local_Bo_Qty'])
 
-        housing_data = BackorderData(longitude=longitude,
-                                   latitude=latitude,
-                                   housing_median_age=housing_median_age,
-                                   total_rooms=total_rooms,
-                                   total_bedrooms=total_bedrooms,
-                                   population=population,
-                                   households=households,
-                                   median_income=median_income,
-                                   ocean_proximity=ocean_proximity,
+        Potential_Issue = request.form['Potential_Issue']
+        Deck_Risk = request.form['Deck_Risk']
+        OE_Constraint = request.form['OE_Constraint']
+        PPAP_Risk = request.form['PPAP_Risk']
+        Stop_Auto_Buy = request.form['Stop_Auto_Buy']
+        Rev_Stop = request.form['Rev_Stop']
+
+        backorder_data = BackorderData(
+                    national_inv=national_inv,
+                    lead_time=lead_time,
+                    in_transit_qty=in_transit_qty,
+                    forecast_3_m=forecast_3_m,
+                    forecast_6_m=forecast_6_m,
+                    forecast_9_m=forecast_9_m,
+                    sales_1_m=sales_1_m,
+                    sales_3_m=sales_3_m,
+                    sales_6_m=sales_6_m,
+                    sales_9_m=sales_9_m,
+                    min_bank=min_bank,
+                    pieces_past_due=pieces_past_due,
+                    Perf_6_Month_Avg=Perf_6_Month_Avg,
+                    Perf_12_Month_Avg=Perf_12_Month_Avg,
+                    Local_Bo_Qty=Local_Bo_Qty,
+                    Potential_Issue=Potential_Issue,
+                    Deck_Risk=Deck_Risk,
+                    OE_Constraint=OE_Constraint,
+                    PPAP_Risk=PPAP_Risk,
+                    Stop_Auto_Buy=Stop_Auto_Buy,
+                    Rev_Stop=Rev_Stop,
                                    )
-        housing_df = housing_data.get_housing_input_data_frame()
-        housing_predictor = BackOrderPredictor(model_dir=MODEL_DIR)
-        median_housing_value = housing_predictor.predict(X=housing_df)
+
+        backorder_df = backorder_data.get_backorder_input_data_frame()
+        predictor = BackOrderPredictor(model_dir=MODEL_DIR)
+        went_on_backorder = predictor.predict(X=backorder_df)
+        if went_on_backorder==0:
+            went_on_backorder='No'
+        else:
+            went_on_backorder='Yes'
         context = {
-            BACKORDER_DATA_KEY: housing_data.get_housing_data_as_dict(),
-            WENT_ON_BACKORDER_KEY: median_housing_value,
+            BACKORDER_DATA_KEY: backorder_data.get_backorder_data_as_dict(),
+            WENT_ON_BACKORDER_KEY: went_on_backorder,
         }
         return render_template('predict.html', context=context)
     return render_template("predict.html", context=context)

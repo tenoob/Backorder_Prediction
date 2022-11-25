@@ -37,27 +37,5 @@ model_selection:
       class_weight:
       - balanced
 
-  module_1:
-    class: RandomForestClassifier
-    module: sklearn.ensemble
-    params:
-      max_features: sqrt
-    search_param_grid:
-      max_depth:
-      - 9
-      - 5
-      min_samples_split:
-      - 2
-      - 5
-      min_samples_leaf:
-      - 1
-      - 4
-      max_features:
-      - sqrt
-      - log2
-      max_leaf_nodes:
-      - 100
-      - 50
-
   
 

@@ -94,8 +94,9 @@
                 <input class="form-control" type="text" name="Local_Bo_Qty"
                     placeholder="Enter a value of Local_Bo_Qty" required />
             </div>
+            
             <div class="mb-3">
-                <label class="form-label"></label>
+                <label class="form-label">Potential_Issue</label>
                 <select class="form-control" name="Potential_Issue" placeholder="Enter a value of Potential_Issue"
                     required>
 
@@ -110,7 +111,7 @@
                 </select>
             </div>
             <div class="mb-3">
-                <label class="form-label"></label>
+                <label class="form-label">Deck_Risk</label>
                 <select class="form-control" name="Deck_Risk" placeholder="Enter a value of Deck_Risk"
                     required>
 
@@ -125,7 +126,7 @@
                 </select>
             </div>
             <div class="mb-3">
-                <label class="form-label"></label>
+                <label class="form-label">OE_Constraint</label>
                 <select class="form-control" name="OE_Constraint" placeholder="Enter a value of OE_Constraint"
                     required>
 
@@ -140,7 +141,7 @@
                 </select>
             </div>
             <div class="mb-3">
-                <label class="form-label"></label>
+                <label class="form-label">PPAP_Risk</label>
                 <select class="form-control" name="PPAP_Risk" placeholder="Enter a value of PPAP_Risk"
                     required>
 
@@ -155,7 +156,7 @@
                 </select>
             </div>
             <div class="mb-3">
-                <label class="form-label"></label>
+                <label class="form-label">Stop_Auto_Buy</label>
                 <select class="form-control" name="Stop_Auto_Buy" placeholder="Enter a value of Stop_Auto_Buy"
                     required>
 
@@ -170,7 +171,7 @@
                 </select>
             </div>
             <div class="mb-3">
-                <label class="form-label"></label>
+                <label class="form-label">Rev_Stop</label>
                 <select class="form-control" name="Rev_Stop" placeholder="Enter a value of Rev_Stop"
                     required>
 
@@ -198,7 +199,7 @@
               BackOrder
             </div>
             <div class="card-body">
-        {% if context['housing_data'] is not none %}
+        {% if context['backorder_data'] is not none %}
         <table class="table table-striped">
             <caption> Prediction </caption>
             <tr>
@@ -220,7 +221,7 @@
 
                 <td>median_house_value </td>
                 <td>
-                    {{ context['went_on_oackorder'] }}
+                    {{ context['went_on_boackorder'] }}
                 </td>
             </tr>
         </table>
