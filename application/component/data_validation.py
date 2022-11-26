@@ -156,6 +156,7 @@ class DataValidation:
                 is_validated=True,
                 message="Data Validation performed Successfully")
             
+            
             return data_validation_artifact
         except Exception as e:
             raise BackorderException(e,sys) from e
