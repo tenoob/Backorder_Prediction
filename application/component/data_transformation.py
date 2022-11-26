@@ -70,24 +70,9 @@ class DataTransformation:
                 ('categorical_pipeline',categorical_pipeline,categorical_columns)
             ])
 
-            """#reading the model.yaml file for dataset_balancing
-            model_file = read_yaml_file(MODEL_FILE_PATH)
-            balancer = model_file[DATASET_BALANCING_KEY]
-            class_name = balancer[CLASS_KEY]
-            modeule_name = balancer[MODULE_KEY]
-            params = balancer[PARAM_KEY]
-
-            obj = ModelFactory.class_for_name(module_name=modeule_name,class_name=class_name)
-
-            model = obj()
-
-            model = ModelFactory.update_propery_of_class(model,params)
-            
-            X_res ,y_res = model.fit_resample(x,y)"""
 
             preprocess = Pipeline([
                 ("part1",separete_preprocess),
-                #('dataset_balance',model),
                 ('pca',PCA(n_components=accepted_componets)),
             ])
 
@@ -111,24 +96,6 @@ class DataTransformation:
             modeule_name = balancer[MODULE_KEY]
             params = balancer[PARAM_KEY]
 
-            
-            """numerical_pipeline = Pipeline(steps=[
-                #("imputer",SimpleImputer(strategy='median')),
-                ])
-
-            categorical_pipeline = Pipeline(steps=[
-                #('imputer',SimpleImputer(strategy='most_frequent')),
-                ('one_hot_encoder',OneHotEncoder()),
-                ])
-            
-            separete_preprocess = ColumnTransformer(
-                transformers=[
-                ('numerical_pipeline',numerical_pipeline,numerical_columns),
-                ('categorical_pipeline',categorical_pipeline,categorical_columns)
-            ])"""
-
-
-            #x = separete_preprocess.fit_transform(x)
 
             obj = ModelFactory.class_for_name(module_name=modeule_name,class_name=class_name)
 
