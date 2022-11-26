@@ -38,18 +38,18 @@ class BackorderData:
             self.national_inv = national_inv
             self.lead_time = lead_time
             self.in_transit_qty = in_transit_qty
-            self.forecast_3_m = forecast_3_m
-            self.forecast_6_m = forecast_6_m
-            self.forecast_9_m = forecast_9_m
-            self.sales_1_m = sales_1_m
-            self.sales_3_m = sales_3_m
-            self.sales_6_m = sales_6_m
-            self.sales_9_m = sales_9_m
+            self.forecast_3_month = forecast_3_m
+            self.forecast_6_month = forecast_6_m
+            self.forecast_9_month = forecast_9_m
+            self.sales_1_month = sales_1_m
+            self.sales_3_month = sales_3_m
+            self.sales_6_month = sales_6_m
+            self.sales_9_month = sales_9_m
             self.min_bank = min_bank
             self.pieces_past_due = pieces_past_due
-            self.Perf_6_Month_Avg = Perf_6_Month_Avg
-            self.Perf_12_Month_Avg = Perf_12_Month_Avg
-            self.Local_Bo_Qty = Local_Bo_Qty
+            self.perf_6_month_avg = Perf_6_Month_Avg
+            self.perf_12_month_avg = Perf_12_Month_Avg
+            self.local_bo_qty = Local_Bo_Qty
             self.Potential_Issue = Potential_Issue
             self.Deck_Risk = Deck_Risk
             self.OE_Constraint = OE_Constraint
@@ -74,26 +74,24 @@ class BackorderData:
                 "national_inv":[self.national_inv],
                 "lead_time":[self.lead_time],
                 "in_transit_qty":[self.in_transit_qty],
-                "forecast_3_m":[self.forecast_3_m],
-                "forecast_6_m":[self.forecast_6_m],
-                "forecast_9_m":[self.forecast_9_m],
-                "sales_1_m":[self.sales_1_m],
-                "sales_3_m":[self.sales_3_m],
-                "sales_6_m":[self.sales_6_m],
-                "sales_9_m":[self.sales_9_m],
+                "forecast_3_month":[self.forecast_3_month],
+                "forecast_6_month":[self.forecast_6_month],
+                "forecast_9_month":[self.forecast_9_month],
+                "sales_1_month":[self.sales_1_month],
+                "sales_3_month":[self.sales_3_month],
+                "sales_6_month":[self.sales_6_month],
+                "sales_9_month":[self.sales_9_month],
                 "min_bank":[self.min_bank],
                 "pieces_past_due":[self.pieces_past_due],
-                "Perf_6_Month_Avg":[self.Perf_6_Month_Avg],
-                "Perf_12_Month_Avg":[self.Perf_12_Month_Avg],
-                "Local_Bo_Qty":[self.Local_Bo_Qty],
-                "Potential_Issue":[self.Potential_Issue],
-                "Deck_Risk":[self.Deck_Risk],
-                "OE_Constraint":[self.OE_Constraint],
-                "PPAP_Risk":[self.PPAP_Risk],
-                "Stop_Auto_Buy":[self.Stop_Auto_Buy],
-                "Rev_Stop":[self.Rev_Stop],
-                "went_on_backorder":[self.went_on_backorder]}
-
+                "perf_6_month_avg":[self.perf_6_month_avg],
+                "perf_12_month_avg":[self.perf_12_month_avg],
+                "local_bo_qty":[self.local_bo_qty],
+                "potential_issue":[self.Potential_Issue],
+                "deck_risk":[self.Deck_Risk],
+                "oe_constraint":[self.OE_Constraint],
+                "ppap_risk":[self.PPAP_Risk],
+                "stop_auto_buy":[self.Stop_Auto_Buy],
+                "rev_stop":[self.Rev_Stop]}
 
             return input_data
         except Exception as e:
@@ -114,7 +112,8 @@ class BackOrderPredictor:
             latest_model_dir = os.path.join(self.model_dir, f"{max(folder_name)}")
             file_name = os.listdir(latest_model_dir)[0]
             latest_model_path = os.path.join(latest_model_dir, file_name)
-            print(latest_model_path)
+            #print(latest_model_path , os.getcwd())
+
             return latest_model_path
         except Exception as e:
             raise BackorderException(e, sys) from e
@@ -122,6 +121,7 @@ class BackOrderPredictor:
     def predict(self, X):
         try:
             model_path = self.get_latest_model_path()
+            
             model = load_object(file_path=model_path)
             value = model.predict(X)
             return value
