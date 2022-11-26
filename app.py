@@ -27,7 +27,7 @@ MODEL_DIR = os.path.join(ROOT_DIR, SAVED_MODELS_DIR_NAME)
 
 
 BACKORDER_DATA_KEY = "backorder_data"
-WENT_ON_BACKORDER_KEY = "went_on_oackorder"
+WENT_ON_BACKORDER_KEY = "went_on_backorder"
 
 app = Flask(__name__)
 
@@ -101,6 +101,7 @@ def train():
 #Work in Progress...
 @app.route('/predict', methods=['GET', 'POST'])
 def predict():
+
     context = {
         BACKORDER_DATA_KEY: None,
         WENT_ON_BACKORDER_KEY: None
@@ -153,7 +154,7 @@ def predict():
                     Stop_Auto_Buy=Stop_Auto_Buy,
                     Rev_Stop=Rev_Stop,
                                    )
-
+                                   
         backorder_df = backorder_data.get_backorder_input_data_frame()
         predictor = BackOrderPredictor(model_dir=MODEL_DIR)
         went_on_backorder = predictor.predict(X=backorder_df)
