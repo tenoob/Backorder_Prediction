@@ -73,7 +73,7 @@ table-layout: fixed;
                         <a class="nav-link {% if 'saved_models' in request.path %} active {% endif %}" href="/saved_models">View Trained Model</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if 'predict' in request.path %} active {% endif %}" href="/predict">Estimate Housing Price</a>
+                        <a class="nav-link {% if 'predict' in request.path %} active {% endif %}" href="/predict">Estimate BackOrder</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if 'predict' in request.path %} active {% endif %}" href="/view_experiment_hist">Experiment History</a>
@@ -100,7 +100,7 @@ table-layout: fixed;
                     <a style=" text-decoration: none;color:black" href="/saved_models">View Trained Model</a>
                 </li>
                 <li class="list-group-item py-1 {% if 'predict' in request.path %} active {% endif %}">
-                    <a style=" text-decoration: none;color:black" href="/predict">Estimate Housing Price</a>
+                    <a style=" text-decoration: none;color:black" href="/predict">Estimate BackOrder</a>
                 </li>
                 <li class="list-group-item py-1 {% if 'train' in request.path %} active {% endif %}">
                     <a style=" text-decoration: none;color:black" href="/train">Train BackOrder estimator</a>
@@ -165,7 +165,7 @@ table-layout: fixed;
         <!-- Copyright -->
         <div class="text-center text-light p-3" style="background-color: rgba(3, 36, 67, 0.504);">
             © 2022 Copyright:
-            <a class="text-light" href="https://ineuron.ai/">iNeuron Intelligence Pvt Limited</a>
+            <a class="text-light" href="https://github.com/tenoob/Backorder_Prediction">Project by Anand Mohan</a>
         </div>
         <!-- Copyright -->
     </footer>
