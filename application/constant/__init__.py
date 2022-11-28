@@ -45,7 +45,8 @@ SCHEMA_FILE_PATH = os.path.join(
     ROOT_DIR,
     CONFIGRATION_DIR,
     SCHEMA_FILE_NAME)
-    
+
+DATASET_RAW_INPUT_COLUMNS = 'raw_input_columns'  
 DATASET_SCHEMA_COLUMNS_KEY = 'columns'
 NUMERICAL_COLUMN_KEY = 'numerical_columns'
 CATEGORICAL_COLUMN_KEY = 'categorical_columns'
