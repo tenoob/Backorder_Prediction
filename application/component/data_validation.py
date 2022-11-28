@@ -66,7 +66,7 @@ class DataValidation:
 
             for col in cols:
                 if col in df.columns:
-                    logging.info(f"{u'\u2713'} [ {col} ] is present in Dataset ")
+                    logging.info(f"\N{check mark} [ {col} ] is present in Dataset ")
                     dtype = self.check_dtype(
                                     df_col=df[col].dtype,
                                     schema_col= schema[DATASET_RAW_INPUT_COLUMNS][col])
