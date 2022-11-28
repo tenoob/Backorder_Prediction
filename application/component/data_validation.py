@@ -1,4 +1,4 @@
-from application.constant import COLUMNS_TO_USE_KEY, SCHEMA_FILE_PATH
+from application.constant import COLUMNS_TO_USE_KEY, SCHEMA_FILE_PATH ,DATASET_SCHEMA_COLUMNS_KEY , DATASET_RAW_INPUT_COLUMNS
 from application.entity.artifact_entity import DataIngestionArtifact, DataValidationArtifact
 from application.entity.config_entity import DataValidationConfig
 from application.logger import logging
@@ -51,14 +51,62 @@ class DataValidation:
         except Exception as e:
             raise BackorderException(e,sys) from e
 
+    def check_dtype(self,df_col,schema_col) -> bool:
+        try:
+            if df_col != schema_col:
+                return False
+        except Exception as e:
+            raise BackorderException(e,sys)
+    
+    def check_columns(self,df,schema) -> bool:
+        try:
+            column_present = True
+            dtype_check = True
+            cols = schema[COLUMNS_TO_USE_KEY]
+
+            for col in cols:
+                if col in df.columns:
+                    logging.info(f"{u'\u2713'} [ {col} ] is present in Dataset ")
+                    dtype = self.check_dtype(
+                                    df_col=df[col].dtype,
+                                    schema_col= schema[DATASET_RAW_INPUT_COLUMNS][col])
+                    
+                    if dtype is False:
+                        dtype_check=False
+                        logging.info(f'[ {col} ] should be {schema[DATASET_RAW_INPUT_COLUMNS][col]} but is {df[col].dtype}')
+                    else:
+                        logging.info(f'[ {col} ] Datatype is correct')
+
+                else:
+                    logging.info(f"\N{cross mark} [ {col} ] is not present in Dataset ")
+                    column_present = False
+            
+            # return true if both column_present and dtype_check are true
+            if column_present and dtype_check:
+                return True
+
+            return False 
+        except Exception as e:
+            raise BackorderException(e,sys)
+    
     def validate_dataset_schema(self) -> bool:
         try:
             validation_status = False
 
             #Work in progress
+            schema_file = read_yaml_file(file_path=SCHEMA_FILE_PATH)
+
+            train_df = pd.read_csv(self.data_ingestion_artifact.train_file_path,nrows=1000)
+            test_df = pd.read_csv(self.data_ingestion_artifact.test_file_path,nrows=1000)
+
+            #checking for column in train_df
+            check_train = self.check_columns(df=train_df,schema=schema_file)
+            check_test = self.check_columns(df=test_df,schema=schema_file)
 
 
-            validation_status = True
+            if check_train and check_test:
+                validation_status = True
+
             return validation_status
         except Exception as e:
             raise BackorderException(e,sys) from e
