@@ -1,5 +1,29 @@
 accepted_varience: 0.90
 
+raw_input_columns:
+  sku :  object
+  national_inv :  int64
+  lead_time :  float64
+  in_transit_qty :  int64
+  forecast_3_month :  int64
+  forecast_6_month :  int64
+  forecast_9_month :  int64
+  sales_1_month :  int64
+  sales_3_month :  int64
+  sales_6_month :  int64
+  sales_9_month :  int64
+  min_bank :  int64
+  potential_issue :  object
+  pieces_past_due :  int64
+  perf_6_month_avg :  float64
+  perf_12_month_avg :  float64
+  local_bo_qty :  int64
+  deck_risk :  object
+  oe_constraint :  object
+  ppap_risk :  object
+  stop_auto_buy :  object
+  rev_stop :  object
+  went_on_backorder :  object
 
 columns:
   sku :  object
