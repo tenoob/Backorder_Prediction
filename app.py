@@ -32,8 +32,8 @@ WENT_ON_BACKORDER_KEY = "went_on_backorder"
 app = Flask(__name__)
 
 
-@app.route('/artifact', defaults={'req_path': 'application'})
-@app.route('/artifact/<path:req_path>')
+@app.route('/storage', defaults={'req_path': 'application'})
+@app.route('/storage/<path:req_path>')
 def render_artifact_dir(req_path):
     os.makedirs("application", exist_ok=True)
     # Joining the base and the requested path
@@ -56,7 +56,7 @@ def render_artifact_dir(req_path):
 
     # Show directory contents
     files = {os.path.join(abs_path, file_name): file_name for file_name in os.listdir(abs_path) if
-             "artifact" in os.path.join(abs_path, file_name)}
+             "storage" in os.path.join(abs_path, file_name)}
 
     result = {
         "files": files,
