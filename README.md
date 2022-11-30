@@ -2,8 +2,4 @@
 
 app url: [backorder](https://backorder-prediction-app.herokuapp.com/)
 
-
-<p align="center">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/yLDB_3cSEAo" title="YouTube video player" frameborder="0" 
-allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</p>
+demo video:[![Youtube](https://download.logo.wine/logo/YouTube/YouTube-Logo.wine.png)](https://youtu.be/yLDB_3cSEAo)
