@@ -9,4 +9,5 @@ evidently
 dill
 imblearn
 patool
+pyunpack
 -e .

@@ -8,6 +8,8 @@ from six.moves import urllib
 from shutil import copy
 import pandas as pd
 import patoolib
+from pyunpack import Archive
+
 
 
 
@@ -56,8 +58,8 @@ class DataIngestion:
                 raw_tgz_file_obj.extractall(path=raw_data_dir)"""
 
             #rar_file_name = os.path.basename(tgz_file_path)
-            patoolib.extract_archive(tgz_file_path,outdir=raw_data_dir)
-
+            #patoolib.extract_archive(tgz_file_path,outdir=raw_data_dir)
+            Archive(tgz_file_path).extractall(raw_data_dir)
             logging.info("Extraction Successfull.")
         except Exception as e:
             raise BackorderException(e,sys) from e
