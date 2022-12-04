@@ -7,7 +7,7 @@ from six.moves import urllib
 #import urllib.request
 from shutil import copy
 import pandas as pd
-import patoolib
+#import patoolib
 from pyunpack import Archive
 
 
